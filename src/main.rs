@@ -9,16 +9,17 @@ fn basename(s: &str) -> &str {
 }
 
 fn parse_timestr(s: &str) -> u32 {
-    let tokens: Vec<&str> = s.split(':').collect();
-    match &tokens[..] {
-        [h, m, s] => h.parse::<u32>().expect("not number") * 3600 +
-                     m.parse::<u32>().expect("not number") * 60 +
-                     s.parse::<u32>().expect("not number"),
-        _ => panic!("invalid time string '{}' ", s)
+    let mut tokens: Vec<&str> = s.split(':').collect();
+
+    let mut sec = 0;
+    while tokens.len() > 0 {
+        sec *= 60;
+        sec += tokens.remove(0).parse::<u32>().expect("not number");
     }
+    sec
 }
 
-fn to_timestr(mut t: u32) -> String {
+fn fmt_timestr(mut t: u32) -> String {
     let s = t % 60;
     t /= 60;
     let m = t % 60;
@@ -51,5 +52,5 @@ fn main() {
         _ => panic!("invalid operator '{}' ", op)
     } as u32;
 
-    println!("{}", to_timestr(res));
+    println!("{}", fmt_timestr(res));
 }
